@@ -29,7 +29,7 @@ export default function DashboardPage() {
     queryFn: async () => {
       if (isWorker && assignedBusId) {
         // Worker: solo obtener su bus asignado
-        const bus = await busesService.getBusById(assignedBusId.toString());
+        const bus = await busesService.getBusById(assignedBusId);
         return { data: [bus], pagination: { page: 1, limit: 1, total: 1, totalPages: 1 } };
       } else {
         // Admin: obtener todos los buses activos

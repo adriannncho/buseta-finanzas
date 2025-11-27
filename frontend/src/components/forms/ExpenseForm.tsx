@@ -68,7 +68,7 @@ export default function ExpenseForm({ expense, onSuccess, onCancel }: ExpenseFor
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: { id: string; updates: UpdateExpenseData }) =>
+    mutationFn: (data: { id: number; updates: UpdateExpenseData }) =>
       expensesService.updateExpense(data.id, data.updates),
     onSuccess: () => {
       toast.success('Gasto actualizado exitosamente');
@@ -122,7 +122,7 @@ export default function ExpenseForm({ expense, onSuccess, onCancel }: ExpenseFor
       };
 
       console.log('Updating expense with:', updates);
-      await updateMutation.mutateAsync({ id: expense.id.toString(), updates });
+      await updateMutation.mutateAsync({ id: expense.id, updates });
     } else {
       const data: CreateExpenseData = {
         busId: parseInt(formData.busId),

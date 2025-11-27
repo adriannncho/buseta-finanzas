@@ -8,7 +8,6 @@ import Button from '../../components/ui/Button';
 import { 
   ShieldCheckIcon, 
   UserIcon, 
-  CalendarIcon,
   ClockIcon,
   DocumentTextIcon 
 } from '@heroicons/react/24/outline';

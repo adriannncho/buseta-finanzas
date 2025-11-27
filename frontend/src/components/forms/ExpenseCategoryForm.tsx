@@ -55,7 +55,7 @@ export default function ExpenseCategoryForm({
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: { id: string; updates: UpdateExpenseCategoryData }) =>
+    mutationFn: (data: { id: number; updates: UpdateExpenseCategoryData }) =>
       expensesService.updateExpenseCategory(data.id, data.updates),
     onSuccess: () => {
       toast.success('Categoría actualizada exitosamente');

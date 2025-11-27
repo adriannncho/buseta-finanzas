@@ -11,7 +11,7 @@ import { User } from '../../types/common';
 import { useToast } from '../../contexts/ToastContext';
 
 interface ProfitSharingMemberFormProps {
-  groupId: string;
+  groupId: number;
   member?: ProfitSharingMember | null;
   users: User[];
   currentTotalPercentage: number;
@@ -29,11 +29,11 @@ export default function ProfitSharingMemberForm({
 }: ProfitSharingMemberFormProps) {
   const toast = useToast();
   const [formData, setFormData] = useState<{
-    userId: string;
+    userId: number;
     roleInShare: ShareRole;
     percentage: number;
   }>({
-    userId: '',
+    userId: 0,
     roleInShare: 'DRIVER',
     percentage: 0,
   });
@@ -60,7 +60,7 @@ export default function ProfitSharingMemberForm({
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: { id: string; updates: UpdateProfitSharingMemberData }) =>
+    mutationFn: (data: { id: number; updates: UpdateProfitSharingMemberData }) =>
       profitSharingService.updateProfitSharingMember(data.id, data.updates),
     onSuccess: () => {
       toast.success('Miembro actualizado exitosamente');
@@ -147,8 +147,8 @@ export default function ProfitSharingMemberForm({
           Usuario <span className="text-red-500">*</span>
         </label>
         <select
-          value={formData.userId}
-          onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
+          value={formData.userId || ''}
+          onChange={(e) => setFormData({ ...formData, userId: parseInt(e.target.value) || 0 })}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           disabled={!!member} // Can't change user when editing
         >

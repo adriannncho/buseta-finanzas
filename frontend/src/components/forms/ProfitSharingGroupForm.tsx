@@ -24,7 +24,7 @@ export default function ProfitSharingGroupForm({
   const [formData, setFormData] = useState<
     CreateProfitSharingGroupData & { isActive?: boolean }
   >({
-    busId: '',
+    busId: 0,
     name: '',
     startDate: '',
     endDate: '',
@@ -42,7 +42,7 @@ export default function ProfitSharingGroupForm({
   useEffect(() => {
     if (group) {
       setFormData({
-        busId: group.busId.toString(),
+        busId: group.busId,
         name: group.name || '',
         startDate: group.startDate.split('T')[0],
         endDate: group.endDate ? group.endDate.split('T')[0] : '',
@@ -63,7 +63,7 @@ export default function ProfitSharingGroupForm({
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: { id: string; updates: UpdateProfitSharingGroupData }) =>
+    mutationFn: (data: { id: number; updates: UpdateProfitSharingGroupData }) =>
       profitSharingService.updateProfitSharingGroup(data.id, data.updates),
     onSuccess: () => {
       toast.success('Grupo actualizado exitosamente');
@@ -109,7 +109,7 @@ export default function ProfitSharingGroupForm({
     } else {
       // Create
       const createData: CreateProfitSharingGroupData = {
-        busId: parseInt(formData.busId),
+        busId: formData.busId,
         name: formData.name || undefined,
         startDate: formData.startDate,
         endDate: formData.endDate || undefined,
@@ -130,14 +130,14 @@ export default function ProfitSharingGroupForm({
           Bus <span className="text-red-500">*</span>
         </label>
         <select
-          value={formData.busId}
-          onChange={(e) => setFormData({ ...formData, busId: e.target.value })}
+          value={formData.busId || ''}
+          onChange={(e) => setFormData({ ...formData, busId: parseInt(e.target.value) || 0 })}
           className={`w-full px-3 py-2 border ${errors.busId ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
           disabled={!!group} // Can't change bus when editing
         >
           <option value="">Seleccione un bus</option>
           {activeBuses.map((bus) => (
-            <option key={bus.id} value={bus.id.toString()}>
+            <option key={bus.id} value={bus.id}>
               {bus.internalCode} {bus.plateNumber && `(${bus.plateNumber})`}
             </option>
           ))}

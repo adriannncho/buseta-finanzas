@@ -81,14 +81,14 @@ export interface UpdateBudgetItemData {
 export interface GetBudgetsParams {
   page?: number;
   limit?: number;
-  busId?: string;
+  busId?: number;
   startDate?: string;
   endDate?: string;
 }
 
 export interface GetBudgetItemsParams {
-  budgetId?: string;
-  categoryId?: string;
+  budgetId?: number;
+  categoryId?: number;
 }
 
 export const budgetsService = {
@@ -99,7 +99,7 @@ export const budgetsService = {
     return response.data.data;
   },
 
-  async getBudgetById(id: string): Promise<Budget> {
+  async getBudgetById(id: number): Promise<Budget> {
     const response = await apiClient.get(`/budgets/${id}`);
     return response.data.data;
   },
@@ -109,12 +109,12 @@ export const budgetsService = {
     return response.data.data;
   },
 
-  async updateBudget(id: string, data: UpdateBudgetData): Promise<Budget> {
+  async updateBudget(id: number, data: UpdateBudgetData): Promise<Budget> {
     const response = await apiClient.patch(`/budgets/${id}`, data);
     return response.data.data;
   },
 
-  async deleteBudget(id: string): Promise<{ success: boolean }> {
+  async deleteBudget(id: number): Promise<{ success: boolean }> {
     const response = await apiClient.delete(`/budgets/${id}`);
     return response.data.data;
   },
@@ -126,7 +126,7 @@ export const budgetsService = {
     return response.data.data;
   },
 
-  async getBudgetItemById(id: string): Promise<BudgetItem> {
+  async getBudgetItemById(id: number): Promise<BudgetItem> {
     const response = await apiClient.get(`/budgets/items/${id}`);
     return response.data.data;
   },
@@ -136,12 +136,12 @@ export const budgetsService = {
     return response.data.data;
   },
 
-  async updateBudgetItem(id: string, data: UpdateBudgetItemData): Promise<BudgetItem> {
+  async updateBudgetItem(id: number, data: UpdateBudgetItemData): Promise<BudgetItem> {
     const response = await apiClient.patch(`/budgets/items/${id}`, data);
     return response.data.data;
   },
 
-  async deleteBudgetItem(id: string): Promise<{ success: boolean }> {
+  async deleteBudgetItem(id: number): Promise<{ success: boolean }> {
     const response = await apiClient.delete(`/budgets/items/${id}`);
     return response.data.data;
   },

@@ -4,14 +4,14 @@ import { PaginatedResponse } from '../types/common';
 // ==================== CATEGORÍAS ====================
 
 export interface ExpenseCategory {
-  id: string;
+  id: number;
   name: string;
   description?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
   _count?: {
-    expenses: number;
+    busExpenses: number;
   };
 }
 
@@ -36,20 +36,20 @@ export interface GetExpenseCategoriesParams {
 // ==================== GASTOS ====================
 
 export interface Expense {
-  id: string;
-  busId: string;
-  categoryId: string;
+  id: number;
+  busId: number;
+  categoryId: number;
   amount: number;
   description?: string;
   expenseDate: string;
   createdAt: string;
   updatedAt: string;
   category?: {
-    id: string;
+    id: number;
     name: string;
   };
   bus?: {
-    id: string;
+    id: number;
     internalCode: string;
     plateNumber: string;
   };
@@ -87,7 +87,7 @@ export interface ExpenseStatistics {
   avgExpense: number;
   totalCount: number;
   byCategory: Array<{
-    categoryId: string;
+    categoryId: number;
     categoryName: string;
     total: number;
     count: number;
@@ -104,7 +104,7 @@ export const expensesService = {
     return response.data.data;
   },
 
-  async getExpenseCategoryById(id: string): Promise<ExpenseCategory> {
+  async getExpenseCategoryById(id: number): Promise<ExpenseCategory> {
     const response = await apiClient.get(`/expenses/categories/${id}`);
     return response.data.data;
   },
@@ -115,20 +115,20 @@ export const expensesService = {
   },
 
   async updateExpenseCategory(
-    id: string,
+    id: number,
     data: UpdateExpenseCategoryData
   ): Promise<ExpenseCategory> {
     const response = await apiClient.patch(`/expenses/categories/${id}`, data);
     return response.data.data;
   },
 
-  async deleteExpenseCategory(id: string): Promise<ExpenseCategory> {
+  async deleteExpenseCategory(id: number): Promise<ExpenseCategory> {
     const response = await apiClient.delete(`/expenses/categories/${id}`);
     return response.data.data;
   },
 
-  async activateExpenseCategory(id: string): Promise<ExpenseCategory> {
-    const response = await apiClient.post(`/expenses/categories/${id}/activate`);
+  async activateExpenseCategory(id: number): Promise<ExpenseCategory> {
+    const response = await apiClient.patch(`/expenses/categories/${id}/activate`);
     return response.data.data;
   },
 
@@ -139,7 +139,7 @@ export const expensesService = {
     return response.data.data;
   },
 
-  async getExpenseById(id: string): Promise<Expense> {
+  async getExpenseById(id: number): Promise<Expense> {
     const response = await apiClient.get(`/expenses/${id}`);
     return response.data.data;
   },
@@ -158,12 +158,12 @@ export const expensesService = {
     return response.data.data;
   },
 
-  async updateExpense(id: string, data: UpdateExpenseData): Promise<Expense> {
+  async updateExpense(id: number, data: UpdateExpenseData): Promise<Expense> {
     const response = await apiClient.patch(`/expenses/${id}`, data);
     return response.data.data;
   },
 
-  async deleteExpense(id: string): Promise<{ success: boolean }> {
+  async deleteExpense(id: number): Promise<{ success: boolean }> {
     const response = await apiClient.delete(`/expenses/${id}`);
     return response.data.data;
   },

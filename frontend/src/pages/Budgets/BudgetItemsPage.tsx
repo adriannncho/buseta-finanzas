@@ -4,7 +4,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   budgetsService,
   BudgetItem,
-  CreateBudgetItemData,
 } from '../../services/budgets.service';
 import { expensesService } from '../../services/expenses.service';
 import { useToast } from '../../contexts/ToastContext';
@@ -12,7 +11,8 @@ import BudgetItemForm from '../../components/forms/BudgetItemForm';
 import Button from '../../components/ui/Button';
 
 export default function BudgetItemsPage() {
-  const { budgetId } = useParams<{ budgetId: string }>();
+  const { budgetId: budgetIdParam } = useParams<{ budgetId: string }>();
+  const budgetId = budgetIdParam ? parseInt(budgetIdParam, 10) : undefined;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -53,7 +53,7 @@ export default function BudgetItemsPage() {
     },
   });
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     deleteMutation.mutate(id);
   };
 
@@ -108,8 +108,9 @@ export default function BudgetItemsPage() {
     );
   }
 
-  const totalAllocated = items?.reduce((sum, item) => sum + item.allocatedAmount, 0) || 0;
-  const remaining = budget.totalBudget - totalAllocated;
+  const totalPlanned = items?.reduce((sum, item) => sum + item.plannedAmount, 0) || 0;
+  const totalCommitted = items?.reduce((sum, item) => sum + item.committedAmount, 0) || 0;
+  const totalExecuted = items?.reduce((sum, item) => sum + item.executedAmount, 0) || 0;
 
   return (
     <div className="space-y-6">
@@ -136,11 +137,8 @@ export default function BudgetItemsPage() {
             Volver a Presupuestos
           </button>
           <h1 className="text-3xl font-bold text-gray-900">{budget.name}</h1>
-          {budget.description && (
-            <p className="text-gray-600 mt-1">{budget.description}</p>
-          )}
           <p className="text-sm text-gray-500 mt-2">
-            Período: {formatDate(budget.startDate)} - {formatDate(budget.endDate)}
+            Período: {formatDate(budget.startDate)} - {budget.endDate ? formatDate(budget.endDate) : 'Sin fecha fin'}
           </p>
         </div>
         <Button onClick={() => setShowForm(true)}>
@@ -155,31 +153,27 @@ export default function BudgetItemsPage() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <p className="text-sm text-gray-500 mb-1">Presupuesto Total</p>
+            <p className="text-sm text-gray-500 mb-1">Ingresos Planeados</p>
             <p className="text-2xl font-bold text-gray-900">
-              {formatCurrency(budget.totalBudget)}
+              {formatCurrency(budget.totalPlannedIncome)}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-500 mb-1">Total Asignado</p>
+            <p className="text-sm text-gray-500 mb-1">Total Planeado</p>
             <p className="text-2xl font-bold text-blue-600">
-              {formatCurrency(totalAllocated)}
+              {formatCurrency(totalPlanned)}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-500 mb-1">Disponible</p>
-            <p
-              className={`text-2xl font-bold ${
-                remaining < 0 ? 'text-red-600' : 'text-green-600'
-              }`}
-            >
-              {formatCurrency(remaining)}
+            <p className="text-sm text-gray-500 mb-1">Total Comprometido</p>
+            <p className="text-2xl font-bold text-orange-600">
+              {formatCurrency(totalCommitted)}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-500 mb-1">Gastado Real</p>
+            <p className="text-sm text-gray-500 mb-1">Total Ejecutado</p>
             <p className="text-2xl font-bold text-purple-600">
-              {formatCurrency(budget.totalSpent || 0)}
+              {formatCurrency(totalExecuted)}
             </p>
           </div>
         </div>
@@ -187,10 +181,10 @@ export default function BudgetItemsPage() {
         {/* Progress bar */}
         <div className="mt-4">
           <div className="flex justify-between text-sm text-gray-600 mb-1">
-            <span>Asignación</span>
+            <span>Ejecución</span>
             <span>
-              {totalAllocated > 0
-                ? ((totalAllocated / budget.totalBudget) * 100).toFixed(1)
+              {totalPlanned > 0
+                ? ((totalExecuted / totalPlanned) * 100).toFixed(1)
                 : 0}
               %
             </span>
@@ -198,14 +192,14 @@ export default function BudgetItemsPage() {
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
               className={`h-2 rounded-full transition-all ${
-                totalAllocated > budget.totalBudget
+                totalExecuted > totalPlanned
                   ? 'bg-red-600'
-                  : totalAllocated > budget.totalBudget * 0.9
+                  : totalExecuted > totalPlanned * 0.9
                   ? 'bg-yellow-600'
                   : 'bg-blue-600'
               }`}
               style={{
-                width: `${Math.min((totalAllocated / budget.totalBudget) * 100, 100)}%`,
+                width: `${Math.min((totalPlanned > 0 ? (totalExecuted / totalPlanned) * 100 : 0), 100)}%`,
               }}
             ></div>
           </div>
@@ -226,14 +220,17 @@ export default function BudgetItemsPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Categoría
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                  Descripción
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  Planeado
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
-                  Monto Asignado
+                  Comprometido
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
-                  % del Total
+                  Ejecutado
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  % Ejecución
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Acciones
@@ -243,8 +240,8 @@ export default function BudgetItemsPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {items.map((item) => {
                 const percentage =
-                  budget.totalBudget > 0
-                    ? (item.allocatedAmount / budget.totalBudget) * 100
+                  item.plannedAmount > 0
+                    ? (item.executedAmount / item.plannedAmount) * 100
                     : 0;
                 return (
                   <tr key={item.id} className="hover:bg-gray-50">
@@ -253,14 +250,19 @@ export default function BudgetItemsPage() {
                         {item.category?.name || 'Sin categoría'}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-600">
-                        {item.description || '-'}
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <div className="text-sm font-semibold text-gray-900">
+                        {formatCurrency(item.plannedAmount)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <div className="text-sm font-semibold text-gray-900">
-                        {formatCurrency(item.allocatedAmount)}
+                      <div className="text-sm font-semibold text-orange-600">
+                        {formatCurrency(item.committedAmount)}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <div className="text-sm font-semibold text-purple-600">
+                        {formatCurrency(item.executedAmount)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
@@ -330,8 +332,7 @@ export default function BudgetItemsPage() {
               <BudgetItemForm
                 budgetId={budgetId!}
                 item={editingItem}
-                categories={categories || []}
-                budget={budget}
+                categories={categories?.data || []}
                 onSuccess={handleFormSuccess}
                 onCancel={handleCloseForm}
               />

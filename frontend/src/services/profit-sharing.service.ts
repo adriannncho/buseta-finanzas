@@ -144,7 +144,7 @@ export const profitSharingService = {
     return response.data.data;
   },
 
-  async getProfitSharingGroupById(id: string): Promise<ProfitSharingGroup> {
+  async getProfitSharingGroupById(id: number): Promise<ProfitSharingGroup> {
     const response = await apiClient.get(`/profit-sharing/groups/${id}`);
     return response.data.data;
   },
@@ -157,14 +157,14 @@ export const profitSharingService = {
   },
 
   async updateProfitSharingGroup(
-    id: string,
+    id: number,
     data: UpdateProfitSharingGroupData
   ): Promise<ProfitSharingGroup> {
     const response = await apiClient.patch(`/profit-sharing/groups/${id}`, data);
     return response.data.data;
   },
 
-  async deleteProfitSharingGroup(id: string): Promise<{ success: boolean }> {
+  async deleteProfitSharingGroup(id: number): Promise<{ success: boolean }> {
     const response = await apiClient.delete(`/profit-sharing/groups/${id}`);
     return response.data.data;
   },
@@ -178,7 +178,7 @@ export const profitSharingService = {
     return response.data.data;
   },
 
-  async getProfitSharingMemberById(id: string): Promise<ProfitSharingMember> {
+  async getProfitSharingMemberById(id: number): Promise<ProfitSharingMember> {
     const response = await apiClient.get(`/profit-sharing/members/${id}`);
     return response.data.data;
   },
@@ -191,14 +191,14 @@ export const profitSharingService = {
   },
 
   async updateProfitSharingMember(
-    id: string,
+    id: number,
     data: UpdateProfitSharingMemberData
   ): Promise<ProfitSharingMember> {
     const response = await apiClient.patch(`/profit-sharing/members/${id}`, data);
     return response.data.data;
   },
 
-  async deleteProfitSharingMember(id: string): Promise<{ success: boolean }> {
+  async deleteProfitSharingMember(id: number): Promise<{ success: boolean }> {
     const response = await apiClient.delete(`/profit-sharing/members/${id}`);
     return response.data.data;
   },

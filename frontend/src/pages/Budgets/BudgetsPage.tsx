@@ -19,7 +19,7 @@ export default function BudgetsPage() {
   const [showForm, setShowForm] = useState(false);
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
-    budgetId: string | null;
+    budgetId: number | null;
   }>({ isOpen: false, budgetId: null });
 
   const queryClient = useQueryClient();
@@ -50,7 +50,7 @@ export default function BudgetsPage() {
     },
   });
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     setConfirmModal({ isOpen: true, budgetId: id });
   };
 
@@ -179,7 +179,7 @@ export default function BudgetsPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-500">
-                        {formatDate(budget.startDate)} - {formatDate(budget.endDate)}
+                        {formatDate(budget.startDate)} - {budget.endDate ? formatDate(budget.endDate) : 'Sin fecha fin'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

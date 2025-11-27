@@ -35,7 +35,7 @@ export default function ProfitSharingPage() {
   const queryParams: GetProfitSharingGroupsParams = {
     page: currentPage,
     limit: 10,
-    ...(busFilter && { busId: busFilter }),
+    ...(busFilter && { busId: parseInt(busFilter, 10) }),
     ...(statusFilter !== 'ALL' && { isActive: statusFilter === 'true' }),
   };
 
@@ -82,7 +82,7 @@ export default function ProfitSharingPage() {
 
   const confirmDelete = () => {
     if (!confirmModal.groupId) return;
-    deleteMutation.mutate(confirmModal.groupId.toString());
+    deleteMutation.mutate(confirmModal.groupId!);
   };
 
   const handleEdit = (group: ProfitSharingGroup) => {

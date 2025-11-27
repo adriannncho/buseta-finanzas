@@ -33,7 +33,7 @@ export default function ExpenseCategoriesPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => expensesService.deleteExpenseCategory(id),
+    mutationFn: (id: number) => expensesService.deleteExpenseCategory(id),
     onSuccess: () => {
       toast.success('Categoría eliminada exitosamente');
       queryClient.invalidateQueries({ queryKey: ['expense-categories'] });
@@ -44,7 +44,7 @@ export default function ExpenseCategoriesPage() {
   });
 
   const activateMutation = useMutation({
-    mutationFn: (id: string) => expensesService.activateExpenseCategory(id),
+    mutationFn: (id: number) => expensesService.activateExpenseCategory(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['expense-categories'] });
     },
@@ -55,11 +55,11 @@ export default function ExpenseCategoriesPage() {
     setIsEditModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     await deleteMutation.mutateAsync(id);
   };
 
-  const handleActivate = async (id: string) => {
+  const handleActivate = async (id: number) => {
     await activateMutation.mutateAsync(id);
   };
 
@@ -137,7 +137,7 @@ export default function ExpenseCategoriesPage() {
               )}
               {category._count && (
                 <p className="text-xs text-muted-foreground mb-4">
-                  {category._count.expenses} gastos registrados
+                  {category._count.busExpenses} gastos registrados
                 </p>
               )}
               <div className="flex gap-2">

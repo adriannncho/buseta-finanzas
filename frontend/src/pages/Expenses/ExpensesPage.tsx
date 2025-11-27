@@ -29,7 +29,7 @@ export default function ExpensesPage() {
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
-    expenseId: string | null;
+    expenseId: number | null;
   }>({ isOpen: false, expenseId: null });
 
   // Query para categorías activas
@@ -41,7 +41,7 @@ export default function ExpensesPage() {
   // Query para buses activos
   const { data: busesData } = useQuery({
     queryKey: ['buses', { isActive: true }],
-    queryFn: () => expensesService.getBuses({ isActive: true, limit: 100 }),
+    queryFn: () => busesService.getBuses({ isActive: true, limit: 100 }),
   });
 
   // Query para obtener gastos
@@ -78,7 +78,7 @@ export default function ExpensesPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => expensesService.deleteExpense(id),
+    mutationFn: (id: number) => expensesService.deleteExpense(id),
     onSuccess: () => {
       toast.success('Gasto eliminado exitosamente');
       queryClient.invalidateQueries({ queryKey: ['expenses'] });
@@ -94,7 +94,7 @@ export default function ExpensesPage() {
     setIsEditModalOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     setConfirmModal({ isOpen: true, expenseId: id });
   };
 
@@ -194,7 +194,7 @@ export default function ExpensesPage() {
             options={[
               { value: 'all', label: 'Todas las categorías' },
               ...(categoriesData?.data.map((cat) => ({
-                value: cat.id,
+                value: cat.id.toString(),
                 label: cat.name,
               })) || []),
             ]}

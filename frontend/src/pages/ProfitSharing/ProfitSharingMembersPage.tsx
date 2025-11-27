@@ -11,7 +11,8 @@ import ProfitSharingMemberForm from '../../components/forms/ProfitSharingMemberF
 import Button from '../../components/ui/Button';
 
 export default function ProfitSharingMembersPage() {
-  const { groupId } = useParams<{ groupId: string }>();
+  const { groupId: groupIdParam } = useParams<{ groupId: string }>();
+  const groupId = groupIdParam ? parseInt(groupIdParam, 10) : undefined;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -54,7 +55,7 @@ export default function ProfitSharingMembersPage() {
     },
   });
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     deleteMutation.mutate(id);
   };
 

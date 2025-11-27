@@ -55,7 +55,7 @@ export default function BusForm({ bus, onSuccess, onCancel }: BusFormProps) {
 
   // Mutation para actualizar
   const updateMutation = useMutation({
-    mutationFn: (data: { id: string; updates: UpdateBusData }) =>
+    mutationFn: (data: { id: number; updates: UpdateBusData }) =>
       busesService.updateBus(data.id, data.updates),
     onSuccess: () => {
       toast.success('Bus actualizado exitosamente');
@@ -98,7 +98,7 @@ export default function BusForm({ bus, onSuccess, onCancel }: BusFormProps) {
         isActive: formData.isActive,
       };
 
-      await updateMutation.mutateAsync({ id: bus.id.toString(), updates });
+      await updateMutation.mutateAsync({ id: bus.id, updates });
     } else {
       // Crear
       const data: CreateBusData = {

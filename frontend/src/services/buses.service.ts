@@ -40,7 +40,7 @@ export const busesService = {
     return response.data.data;
   },
 
-  async getBusById(id: string): Promise<Bus> {
+  async getBusById(id: number): Promise<Bus> {
     const response = await apiClient.get(`/buses/${id}`);
     return response.data.data;
   },
@@ -50,17 +50,17 @@ export const busesService = {
     return response.data.data;
   },
 
-  async updateBus(id: string, data: UpdateBusData): Promise<Bus> {
+  async updateBus(id: number, data: UpdateBusData): Promise<Bus> {
     const response = await apiClient.patch(`/buses/${id}`, data);
     return response.data.data;
   },
 
-  async deleteBus(id: string): Promise<Bus> {
+  async deleteBus(id: number): Promise<Bus> {
     const response = await apiClient.delete(`/buses/${id}`);
     return response.data.data;
   },
 
-  async activateBus(id: string): Promise<Bus> {
+  async activateBus(id: number): Promise<Bus> {
     const response = await apiClient.post(`/buses/${id}/activate`);
     return response.data.data;
   },

@@ -19,7 +19,7 @@ export default function BudgetForm({ budget, onSuccess, onCancel }: BudgetFormPr
   const toast = useToast();
   const [formData, setFormData] = useState<CreateBudgetData>({
     name: '',
-    busId: '',
+    busId: undefined,
     startDate: '',
     endDate: '',
     totalPlannedIncome: 0,
@@ -38,7 +38,7 @@ export default function BudgetForm({ budget, onSuccess, onCancel }: BudgetFormPr
     if (budget) {
       setFormData({
         name: budget.name || '',
-        busId: budget.busId?.toString() || '',
+        busId: budget.busId || undefined,
         startDate: budget.startDate ? budget.startDate.split('T')[0] : '',
         endDate: budget.endDate ? budget.endDate.split('T')[0] : '',
         totalPlannedIncome: Number(budget.totalPlannedIncome) || 0,
@@ -47,7 +47,7 @@ export default function BudgetForm({ budget, onSuccess, onCancel }: BudgetFormPr
     } else {
       setFormData({
         name: '',
-        busId: '',
+        busId: undefined,
         startDate: '',
         endDate: '',
         totalPlannedIncome: 0,
@@ -68,7 +68,7 @@ export default function BudgetForm({ budget, onSuccess, onCancel }: BudgetFormPr
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: { id: string; updates: UpdateBudgetData }) =>
+    mutationFn: (data: { id: number; updates: UpdateBudgetData }) =>
       budgetsService.updateBudget(data.id, data.updates),
     onSuccess: () => {
       toast.success('Presupuesto actualizado', 'El presupuesto se actualizó exitosamente');
@@ -107,18 +107,18 @@ export default function BudgetForm({ budget, onSuccess, onCancel }: BudgetFormPr
       // Update
       const updates: UpdateBudgetData = {
         name: formData.name,
-        busId: formData.busId ? parseInt(formData.busId) : null,
+        busId: formData.busId || null,
         startDate: formData.startDate,
         endDate: formData.endDate || null,
         totalPlannedIncome: formData.totalPlannedIncome,
         totalPlannedExpense: formData.totalPlannedExpense,
       };
-      updateMutation.mutate({ id: budget.id.toString(), updates });
+      updateMutation.mutate({ id: budget.id, updates });
     } else {
       // Create
       const createData: CreateBudgetData = {
         name: formData.name,
-        busId: formData.busId ? parseInt(formData.busId) : undefined,
+        busId: formData.busId || undefined,
         startDate: formData.startDate,
         endDate: formData.endDate || undefined,
         totalPlannedIncome: formData.totalPlannedIncome,
@@ -153,14 +153,14 @@ export default function BudgetForm({ budget, onSuccess, onCancel }: BudgetFormPr
           Bus (opcional)
         </label>
         <select
-          value={formData.busId}
-          onChange={(e) => setFormData({ ...formData, busId: e.target.value })}
+          value={formData.busId || ''}
+          onChange={(e) => setFormData({ ...formData, busId: e.target.value ? parseInt(e.target.value) : undefined })}
           disabled={isLoading || busesLoading}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
         >
           <option value="">Seleccione un bus (opcional)</option>
           {busesData?.data.map((bus) => (
-            <option key={bus.id} value={bus.id.toString()}>
+            <option key={bus.id} value={bus.id}>
               {bus.internalCode} - {bus.plateNumber}
             </option>
           ))}

@@ -25,7 +25,7 @@ export default function BusesPage() {
   const [selectedBus, setSelectedBus] = useState<Bus | null>(null);
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
-    busId: string | null;
+    busId: number | null;
     action: 'delete' | 'activate';
   }>({ isOpen: false, busId: null, action: 'delete' });
 
@@ -44,7 +44,7 @@ export default function BusesPage() {
 
   // Mutation para eliminar
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => busesService.deleteBus(id),
+    mutationFn: (id: number) => busesService.deleteBus(id),
     onSuccess: () => {
       toast.success('Bus eliminado exitosamente');
       queryClient.invalidateQueries({ queryKey: ['buses'] });
@@ -56,7 +56,7 @@ export default function BusesPage() {
 
   // Mutation para activar
   const activateMutation = useMutation({
-    mutationFn: (id: string) => busesService.activateBus(id),
+    mutationFn: (id: number) => busesService.activateBus(id),
     onSuccess: () => {
       toast.success('Bus activado exitosamente');
       queryClient.invalidateQueries({ queryKey: ['buses'] });
@@ -71,11 +71,11 @@ export default function BusesPage() {
     setIsEditModalOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     setConfirmModal({ isOpen: true, busId: id, action: 'delete' });
   };
 
-  const handleActivate = (id: string) => {
+  const handleActivate = (id: number) => {
     setConfirmModal({ isOpen: true, busId: id, action: 'activate' });
   };
 

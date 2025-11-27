@@ -17,7 +17,7 @@ export interface User {
 }
 
 export interface AuthUser extends User {
-  sessionId: number;
+  sessionId: string;
   assignedBusId: number | null;
 }
 
