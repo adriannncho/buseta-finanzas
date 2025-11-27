@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { expensesService, ExpenseCategory } from '../../services/expenses.service';
+import { useAuthStore } from '../../stores/auth.store';
 import { useToast } from '../../contexts/ToastContext';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -9,6 +10,7 @@ import Modal from '../../components/ui/Modal';
 import ExpenseCategoryForm from '../../components/forms/ExpenseCategoryForm';
 
 export default function ExpenseCategoriesPage() {
+  const { user } = useAuthStore();
   const queryClient = useQueryClient();
   const toast = useToast();
 
@@ -74,7 +76,9 @@ export default function ExpenseCategoriesPage() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Categorías de Gastos</h1>
-        <Button onClick={() => setIsCreateModalOpen(true)}>Nueva Categoría</Button>
+        {user?.role === 'ADMIN' && (
+          <Button onClick={() => setIsCreateModalOpen(true)}>Nueva Categoría</Button>
+        )}
       </div>
 
       {/* Filtros */}
@@ -140,37 +144,39 @@ export default function ExpenseCategoriesPage() {
                   {category._count.busExpenses} gastos registrados
                 </p>
               )}
-              <div className="flex gap-2">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => handleEdit(category)}
-                  className="flex-1"
-                >
-                  Editar
-                </Button>
-                {category.isActive ? (
+              {user?.role === 'ADMIN' && (
+                <div className="flex gap-2">
                   <Button
-                    variant="danger"
+                    variant="secondary"
                     size="sm"
-                    onClick={() => handleDelete(category.id)}
-                    isLoading={deleteMutation.isPending}
+                    onClick={() => handleEdit(category)}
                     className="flex-1"
                   >
-                    Eliminar
+                    Editar
                   </Button>
-                ) : (
-                  <Button
-                    variant="success"
-                    size="sm"
-                    onClick={() => handleActivate(category.id)}
-                    isLoading={activateMutation.isPending}
-                    className="flex-1"
-                  >
-                    Activar
-                  </Button>
-                )}
-              </div>
+                  {category.isActive ? (
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => handleDelete(category.id)}
+                      isLoading={deleteMutation.isPending}
+                      className="flex-1"
+                    >
+                      Eliminar
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={() => handleActivate(category.id)}
+                      isLoading={activateMutation.isPending}
+                      className="flex-1"
+                    >
+                      Activar
+                    </Button>
+                  )}
+                </div>
+              )}
             </Card>
           ))
         )}
