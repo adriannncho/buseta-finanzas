@@ -1,23 +1,30 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import routesService, { Route, RouteFilters } from '../../services/routes.service';
 import { busesService } from '../../services/buses.service';
 import { usersService } from '../../services/users.service';
 import { useAuthStore } from '../../stores/auth.store';
-import { EyeIcon, FunnelIcon, XMarkIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, FunnelIcon, XMarkIcon, ArrowLeftIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Button from '../../components/ui/Button';
 import RouteCard from '../../components/cards/RouteCard';
+import RouteForm from '../../components/forms/RouteForm';
+import ConfirmModal from '../../components/ui/ConfirmModal';
 
 export default function RoutesHistoryPage() {
   const { user } = useAuthStore();
+  const queryClient = useQueryClient();
   const isWorker = user?.role === 'WORKER';
+  const isAdmin = user?.role === 'ADMIN';
 
   const [page, setPage] = useState(1);
   const limit = 20;
   const [showFilters, setShowFilters] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [routeToDelete, setRouteToDelete] = useState<Route | null>(null);
 
   const [filters, setFilters] = useState<RouteFilters>({
     busId: isWorker && user?.assignedBusId ? user.assignedBusId : undefined,
@@ -50,6 +57,14 @@ export default function RoutesHistoryPage() {
   // Paginación manual
   const totalPages = Math.ceil(routes.length / limit);
   const paginatedRoutes = routes.slice((page - 1) * limit, page * limit);
+
+  // Mutation para eliminar ruta (solo ADMIN)
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => routesService.deleteRoute(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['routes-history'] });
+    },
+  });
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -93,6 +108,34 @@ export default function RoutesHistoryPage() {
   const handleViewDetails = (route: Route) => {
     setSelectedRoute(route);
     setShowDetailsModal(true);
+  };
+
+  const handleEdit = (route: Route) => {
+    setSelectedRoute(route);
+    setShowEditModal(true);
+  };
+
+  const handleDelete = async (route: Route) => {
+    setRouteToDelete(route);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!routeToDelete) return;
+    
+    try {
+      await deleteMutation.mutateAsync(routeToDelete.id);
+      setShowDeleteModal(false);
+      setRouteToDelete(null);
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Error al eliminar la ruta');
+    }
+  };
+
+  const handleFormSuccess = () => {
+    setShowEditModal(false);
+    setSelectedRoute(null);
+    queryClient.invalidateQueries({ queryKey: ['routes-history'] });
   };
 
   return (
@@ -281,13 +324,33 @@ export default function RoutesHistoryPage() {
                         {formatCurrency(route.netIncome)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <button
-                          onClick={() => handleViewDetails(route)}
-                          className="inline-flex items-center px-3 py-1 border border-blue-300 rounded-md text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
-                        >
-                          <EyeIcon className="h-4 w-4 mr-1" />
-                          Ver
-                        </button>
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => handleViewDetails(route)}
+                            className="inline-flex items-center px-2 py-1 border border-blue-300 rounded-md text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
+                            title="Ver detalles"
+                          >
+                            <EyeIcon className="h-4 w-4" />
+                          </button>
+                          {isAdmin && (
+                            <>
+                              <button
+                                onClick={() => handleEdit(route)}
+                                className="inline-flex items-center px-2 py-1 border border-yellow-300 rounded-md text-xs font-medium text-yellow-700 bg-yellow-50 hover:bg-yellow-100 transition-colors"
+                                title="Editar"
+                              >
+                                <PencilIcon className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(route)}
+                                className="inline-flex items-center px-2 py-1 border border-red-300 rounded-md text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 transition-colors"
+                                title="Eliminar"
+                              >
+                                <TrashIcon className="h-4 w-4" />
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -350,6 +413,36 @@ export default function RoutesHistoryPage() {
           </div>
         </div>
       )}
+
+      {/* Modal de Edición */}
+      {showEditModal && selectedRoute && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <RouteForm
+              route={selectedRoute}
+              onSuccess={handleFormSuccess}
+              onCancel={() => {
+                setShowEditModal(false);
+                setSelectedRoute(null);
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Confirmación */}
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setRouteToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+        title="Eliminar ruta"
+        message={routeToDelete ? `¿Estás seguro de eliminar la ruta "${routeToDelete.routeName}" del ${formatDate(routeToDelete.routeDate)}? Esta acción no se puede deshacer.` : ''}
+        confirmText="Eliminar"
+        variant="danger"
+      />
     </div>
   );
 }

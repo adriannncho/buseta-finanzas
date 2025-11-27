@@ -6,6 +6,7 @@ import { useAuthStore } from '../../stores/auth.store';
 import RouteCard from '../../components/cards/RouteCard';
 import RouteForm from '../../components/forms/RouteForm';
 import Button from '../../components/ui/Button';
+import ConfirmModal from '../../components/ui/ConfirmModal';
 import { PlusIcon, FunnelIcon, TruckIcon, ClockIcon } from '@heroicons/react/24/outline';
 
 export default function RoutesPage() {
@@ -15,6 +16,8 @@ export default function RoutesPage() {
   const [showForm, setShowForm] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [routeToDelete, setRouteToDelete] = useState<Route | null>(null);
   
   // Filtros con fecha de hoy por defecto
   const today = new Date().toISOString().split('T')[0];
@@ -59,18 +62,19 @@ export default function RoutesPage() {
   };
 
   const handleDelete = async (route: Route) => {
-    if (
-      window.confirm(
-        `¿Estás seguro de eliminar la ruta "${route.routeName}" del ${new Date(
-          route.routeDate
-        ).toLocaleDateString()}?`
-      )
-    ) {
-      try {
-        await deleteMutation.mutateAsync(route.id);
-      } catch (error: any) {
-        alert(error.response?.data?.error || 'Error al eliminar la ruta');
-      }
+    setRouteToDelete(route);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!routeToDelete) return;
+    
+    try {
+      await deleteMutation.mutateAsync(routeToDelete.id);
+      setShowDeleteModal(false);
+      setRouteToDelete(null);
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Error al eliminar la ruta');
     }
   };
 
@@ -283,6 +287,20 @@ export default function RoutesPage() {
           </div>
         </div>
       )}
+
+      {/* Modal de Confirmación */}
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setRouteToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+        title="Eliminar ruta"
+        message={routeToDelete ? `¿Estás seguro de eliminar la ruta "${routeToDelete.routeName}" del ${new Date(routeToDelete.routeDate).toLocaleDateString()}? Esta acción no se puede deshacer.` : ''}
+        confirmText="Eliminar"
+        variant="danger"
+      />
     </div>
   );
 }
