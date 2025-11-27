@@ -129,27 +129,27 @@ export default function DashboardPage() {
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Resumen Global</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-green-50 rounded-lg p-4">
+            <div className="bg-green-50 rounded-lg p-4 min-w-0">
               <p className="text-sm text-gray-600 mb-1">Ingresos Totales</p>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-2xl font-bold text-green-600 truncate">
                 {formatCurrency(globalStats.totalIncome)}
               </p>
             </div>
-            <div className="bg-red-50 rounded-lg p-4">
+            <div className="bg-red-50 rounded-lg p-4 min-w-0">
               <p className="text-sm text-gray-600 mb-1">Gastos Totales</p>
-              <p className="text-2xl font-bold text-red-600">
+              <p className="text-2xl font-bold text-red-600 truncate">
                 {formatCurrency(globalStats.totalExpenses)}
               </p>
             </div>
-            <div className="bg-blue-50 rounded-lg p-4">
+            <div className="bg-blue-50 rounded-lg p-4 min-w-0">
               <p className="text-sm text-gray-600 mb-1">Ganancia Neta</p>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-2xl font-bold text-blue-600 truncate">
                 {formatCurrency(globalStats.netProfit)}
               </p>
             </div>
-            <div className="bg-purple-50 rounded-lg p-4">
+            <div className="bg-purple-50 rounded-lg p-4 min-w-0">
               <p className="text-sm text-gray-600 mb-1">Meta Total</p>
-              <p className="text-2xl font-bold text-purple-600">
+              <p className="text-2xl font-bold text-purple-600 truncate">
                 {formatCurrency(globalStats.monthlyTarget)}
               </p>
               <div className="mt-2">
@@ -199,27 +199,27 @@ export default function DashboardPage() {
 
                   {/* Métricas */}
                   <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Ingresos:</span>
-                      <span className="font-semibold text-green-600">
+                    <div className="flex justify-between items-center gap-2">
+                      <span className="text-sm text-gray-600 flex-shrink-0">Ingresos:</span>
+                      <span className="font-semibold text-green-600 truncate">
                         {formatCurrency(stat.totalIncome)}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Gastos:</span>
-                      <span className="font-semibold text-red-600">
+                    <div className="flex justify-between items-center gap-2">
+                      <span className="text-sm text-gray-600 flex-shrink-0">Gastos:</span>
+                      <span className="font-semibold text-red-600 truncate">
                         {formatCurrency(stat.totalExpenses)}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-                      <span className="text-sm font-medium text-gray-900">Ganancia Neta:</span>
-                      <span className="text-lg font-bold text-blue-600">
+                    <div className="flex justify-between items-center gap-2 pt-3 border-t border-gray-200">
+                      <span className="text-sm font-medium text-gray-900 flex-shrink-0">Ganancia Neta:</span>
+                      <span className="text-lg font-bold text-blue-600 truncate">
                         {formatCurrency(stat.netProfit)}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Meta Mensual:</span>
-                      <span className="font-semibold text-gray-900">
+                    <div className="flex justify-between items-center gap-2">
+                      <span className="text-sm text-gray-600 flex-shrink-0">Meta Mensual:</span>
+                      <span className="font-semibold text-gray-900 truncate">
                         {formatCurrency(stat.monthlyTarget)}
                       </span>
                     </div>

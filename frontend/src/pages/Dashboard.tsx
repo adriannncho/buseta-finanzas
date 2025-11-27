@@ -4,6 +4,7 @@ import DashboardPage from './Dashboard/DashboardPage';
 import UsersPage from './Users/UsersPage';
 import BusesPage from './Buses/BusesPage';
 import RoutesPage from './Routes/RoutesPage';
+import RoutesHistoryPage from './Routes/RoutesHistoryPage';
 import ExpensesPage from './Expenses/ExpensesPage';
 import ExpenseCategoriesPage from './Expenses/ExpenseCategoriesPage';
 import BudgetsPage from './Budgets/BudgetsPage';
@@ -21,6 +22,7 @@ export default function Dashboard() {
         <Route path="/users" element={<UsersPage />} />
         <Route path="/buses" element={<BusesPage />} />
         <Route path="/routes" element={<RoutesPage />} />
+        <Route path="/routes/history" element={<RoutesHistoryPage />} />
         <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/expenses/categories" element={<ExpenseCategoriesPage />} />
         <Route path="/budgets" element={<BudgetsPage />} />

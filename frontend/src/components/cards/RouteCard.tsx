@@ -117,22 +117,22 @@ export default function RouteCard({ route, onEdit, onDelete }: RouteCardProps) {
 
       {/* Financiero */}
       <div className="p-4 bg-gray-50">
-        <div className="grid grid-cols-3 gap-4 mb-3">
-          <div>
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          <div className="min-w-0">
             <p className="text-xs text-gray-600 font-medium uppercase mb-1">Ingresos</p>
-            <p className="text-sm font-bold text-green-700">
+            <p className="text-sm font-bold text-green-700 truncate">
               {formatCurrency(route.totalIncome)}
             </p>
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-xs text-gray-600 font-medium uppercase mb-1">Gastos</p>
-            <p className="text-sm font-bold text-red-700">
+            <p className="text-sm font-bold text-red-700 truncate">
               {formatCurrency(route.totalExpenses)}
             </p>
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-xs text-gray-600 font-medium uppercase mb-1">Neto</p>
-            <p className="text-sm font-bold text-blue-700">
+            <p className="text-sm font-bold text-blue-700 truncate">
               {formatCurrency(route.netIncome)}
             </p>
           </div>

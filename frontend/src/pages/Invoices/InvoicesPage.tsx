@@ -259,25 +259,25 @@ export default function InvoicesPage() {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs text-gray-500 mb-1">Fecha Emisión</p>
-                    <p className="text-sm font-medium">{formatDate(invoice.issueDate)}</p>
+                    <p className="text-sm font-medium truncate">{formatDate(invoice.issueDate)}</p>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs text-gray-500 mb-1">Monto</p>
-                    <p className="text-sm font-medium">
+                    <p className="text-sm font-medium truncate">
                       {formatCurrency(invoice.totalAmount)}
                     </p>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs text-gray-500 mb-1">Subido por</p>
-                    <p className="text-sm font-medium">
+                    <p className="text-sm font-medium truncate">
                       {invoice.uploader?.fullName || 'N/A'}
                     </p>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs text-gray-500 mb-1">Gastos Asociados</p>
-                    <p className="text-sm font-medium">{invoice._count?.expenses || 0}</p>
+                    <p className="text-sm font-medium truncate">{invoice._count?.expenses || 0}</p>
                   </div>
                 </div>
               </div>

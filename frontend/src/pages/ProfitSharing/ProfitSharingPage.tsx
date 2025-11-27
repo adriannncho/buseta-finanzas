@@ -270,23 +270,23 @@ export default function ProfitSharingPage() {
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs text-gray-500 mb-1">Período</p>
-                        <p className="text-sm font-medium">
+                        <p className="text-sm font-medium truncate">
                           {formatDate(group.startDate)}
                           {group.endDate && ` - ${formatDate(group.endDate)}`}
                         </p>
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs text-gray-500 mb-1">Miembros</p>
-                        <p className="text-sm font-medium">
+                        <p className="text-sm font-medium truncate">
                           {group._count?.members || 0}
                         </p>
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs text-gray-500 mb-1">% Asignado</p>
                         <p
-                          className={`text-sm font-bold ${totalPercentage === 100
+                          className={`text-sm font-bold truncate ${totalPercentage === 100
                               ? 'text-green-600'
                               : totalPercentage > 100
                                 ? 'text-red-600'
@@ -295,9 +295,9 @@ export default function ProfitSharingPage() {
                           {totalPercentage.toFixed(1)}%
                         </p>
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs text-gray-500 mb-1">Sin Asignar</p>
-                        <p className="text-sm font-medium text-gray-700">
+                        <p className="text-sm font-medium text-gray-700 truncate">
                           {(100 - totalPercentage).toFixed(1)}%
                         </p>
                       </div>
@@ -357,29 +357,29 @@ export default function ProfitSharingPage() {
                                 return (
                                   <>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
-                                      <div className="bg-white p-3 rounded shadow-sm">
+                                      <div className="bg-white p-3 rounded shadow-sm min-w-0">
                                         <p className="text-xs text-gray-500 mb-1">Objetivo Mínimo</p>
-                                        <p className="text-lg font-bold text-blue-600">
+                                        <p className="text-lg font-bold text-blue-600 truncate">
                                           {formatCurrency(monthlyTarget)}
                                         </p>
                                       </div>
-                                      <div className="bg-white p-3 rounded shadow-sm">
+                                      <div className="bg-white p-3 rounded shadow-sm min-w-0">
                                         <p className="text-xs text-gray-500 mb-1">Utilidad Actual</p>
-                                        <p className="text-lg font-bold text-green-600">
+                                        <p className="text-lg font-bold text-green-600 truncate">
                                           {formatCurrency(currentNet)}
                                         </p>
                                       </div>
-                                      <div className="bg-white p-3 rounded shadow-sm">
-                                        <p className="text-xs text-gray-500 mb-1">
+                                      <div className="bg-white p-3 rounded shadow-sm min-w-0">
+                                        <p className="text-xs text-gray-500 mb-1 truncate">
                                           {remaining > 0 ? 'Por Alcanzar' : 'Superado por'}
                                         </p>
-                                        <p className={`text-lg font-bold ${remaining > 0 ? 'text-orange-600' : 'text-green-600'}`}>
+                                        <p className={`text-lg font-bold truncate ${remaining > 0 ? 'text-orange-600' : 'text-green-600'}`}>
                                           {formatCurrency(Math.abs(remaining))}
                                         </p>
                                       </div>
-                                      <div className="bg-white p-3 rounded shadow-sm">
+                                      <div className="bg-white p-3 rounded shadow-sm min-w-0">
                                         <p className="text-xs text-gray-500 mb-1">Progreso</p>
-                                        <p className={`text-lg font-bold ${
+                                        <p className={`text-lg font-bold truncate ${
                                           targetProgress >= 100 ? 'text-green-600' :
                                           targetProgress >= 75 ? 'text-blue-600' :
                                           targetProgress >= 50 ? 'text-yellow-600' : 'text-red-600'
@@ -423,31 +423,31 @@ export default function ProfitSharingPage() {
                               Resumen del Mes Actual
                             </h4>
                             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                              <div className="bg-white p-3 rounded">
+                              <div className="bg-white p-3 rounded min-w-0">
                                 <p className="text-xs text-gray-500">Ingresos</p>
-                                <p className="text-lg font-bold text-green-600">
+                                <p className="text-lg font-bold text-green-600 truncate">
                                   {formatCurrency(distributionData.totals.totalIncome)}
                                 </p>
                               </div>
-                              <div className="bg-white p-3 rounded">
+                              <div className="bg-white p-3 rounded min-w-0">
                                 <p className="text-xs text-gray-500">Gastos de Rutas</p>
-                                <p className="text-lg font-bold text-orange-600">
+                                <p className="text-lg font-bold text-orange-600 truncate">
                                   {formatCurrency(distributionData.totals.routeExpenses)}
                                 </p>
                               </div>
-                              <div className="bg-white p-3 rounded">
+                              <div className="bg-white p-3 rounded min-w-0">
                                 <p className="text-xs text-gray-500">Gastos Admin</p>
-                                <p className="text-lg font-bold text-red-600">
+                                <p className="text-lg font-bold text-red-600 truncate">
                                   {formatCurrency(distributionData.totals.administrativeExpenses)}
                                 </p>
                               </div>
-                              <div className="bg-white p-3 rounded border-2 border-blue-200">
+                              <div className="bg-white p-3 rounded border-2 border-blue-200 min-w-0">
                                 <p className="text-xs text-gray-500 font-medium">Utilidad Neta</p>
-                                <p className="text-lg font-bold text-blue-600">
+                                <p className="text-lg font-bold text-blue-600 truncate">
                                   {formatCurrency(distributionData.totals.netProfit)}
                                 </p>
                               </div>
-                              <div className="bg-white p-3 rounded">
+                              <div className="bg-white p-3 rounded min-w-0">
                                 <p className="text-xs text-gray-500">Rutas</p>
                                 <p className="text-lg font-bold text-gray-700">
                                   {distributionData.totals.routesCount}

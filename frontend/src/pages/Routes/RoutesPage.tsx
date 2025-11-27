@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import routesService, { Route, RouteFilters } from '../../services/routes.service';
 import { useAuthStore } from '../../stores/auth.store';
 import RouteCard from '../../components/cards/RouteCard';
 import RouteForm from '../../components/forms/RouteForm';
 import Button from '../../components/ui/Button';
-import { PlusIcon, FunnelIcon, TruckIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, FunnelIcon, TruckIcon, ClockIcon } from '@heroicons/react/24/outline';
 
 export default function RoutesPage() {
   const { user } = useAuthStore();
@@ -14,7 +15,12 @@ export default function RoutesPage() {
   const [showForm, setShowForm] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
   const [showFilters, setShowFilters] = useState(false);
-  const [filters, setFilters] = useState<RouteFilters>({});
+  
+  // Filtros con fecha de hoy por defecto
+  const today = new Date().toISOString().split('T')[0];
+  const [filters, setFilters] = useState<RouteFilters>({
+    routeDate: today,
+  });
 
   // Query para obtener rutas
   const { data: routes = [], isLoading } = useQuery({
@@ -83,7 +89,7 @@ export default function RoutesPage() {
   };
 
   const clearFilters = () => {
-    setFilters({});
+    setFilters({ routeDate: today });
   };
 
   const hasActiveFilters = Object.values(filters).some(v => v !== undefined);
@@ -96,13 +102,19 @@ export default function RoutesPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-                Rutas
+                Rutas del Día
               </h1>
               <p className="text-sm text-gray-600 mt-1">
-                Gestión de rutas diarias con gastos detallados
+                Gestión de rutas de hoy ({new Date().toLocaleDateString()})
               </p>
             </div>
             <div className="flex gap-2">
+              <Link to="/dashboard/routes/history">
+                <Button variant="secondary">
+                  <ClockIcon className="h-5 w-5 mr-2" />
+                  <span className="hidden md:inline">Historial</span>
+                </Button>
+              </Link>
               <Button
                 variant="secondary"
                 onClick={() => setShowFilters(!showFilters)}
@@ -125,35 +137,35 @@ export default function RoutesPage() {
           {/* Estadísticas */}
           {stats && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-              <div className="bg-blue-50 rounded-lg p-4">
+              <div className="bg-blue-50 rounded-lg p-4 min-w-0">
                 <p className="text-xs text-blue-600 font-medium uppercase">
                   Total Rutas
                 </p>
-                <p className="text-2xl font-bold text-blue-900 mt-1">
+                <p className="text-2xl font-bold text-blue-900 mt-1 truncate">
                   {stats.totalRoutes}
                 </p>
               </div>
-              <div className="bg-green-50 rounded-lg p-4">
+              <div className="bg-green-50 rounded-lg p-4 min-w-0">
                 <p className="text-xs text-green-600 font-medium uppercase">
                   Ingresos
                 </p>
-                <p className="text-2xl font-bold text-green-900 mt-1">
+                <p className="text-2xl font-bold text-green-900 mt-1 truncate">
                   ${stats.totalIncome.toLocaleString()}
                 </p>
               </div>
-              <div className="bg-red-50 rounded-lg p-4">
+              <div className="bg-red-50 rounded-lg p-4 min-w-0">
                 <p className="text-xs text-red-600 font-medium uppercase">
                   Gastos
                 </p>
-                <p className="text-2xl font-bold text-red-900 mt-1">
+                <p className="text-2xl font-bold text-red-900 mt-1 truncate">
                   ${stats.totalExpenses.toLocaleString()}
                 </p>
               </div>
-              <div className="bg-purple-50 rounded-lg p-4">
+              <div className="bg-purple-50 rounded-lg p-4 min-w-0">
                 <p className="text-xs text-purple-600 font-medium uppercase">
                   Neto
                 </p>
-                <p className="text-2xl font-bold text-purple-900 mt-1">
+                <p className="text-2xl font-bold text-purple-900 mt-1 truncate">
                   ${stats.netIncome.toLocaleString()}
                 </p>
               </div>
