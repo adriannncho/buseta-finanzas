@@ -7,6 +7,7 @@ import {
   UpdateExpenseData,
 } from '../../services/expenses.service';
 import { busesService } from '../../services/buses.service';
+import { useAuthStore } from '../../stores/auth.store';
 import { useToast } from '../../contexts/ToastContext';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
@@ -19,6 +20,7 @@ interface ExpenseFormProps {
 }
 
 export default function ExpenseForm({ expense, onSuccess, onCancel }: ExpenseFormProps) {
+  const { user } = useAuthStore();
   const toast = useToast();
   const [formData, setFormData] = useState({
     busId: '',
@@ -53,6 +55,16 @@ export default function ExpenseForm({ expense, onSuccess, onCancel }: ExpenseFor
       });
     }
   }, [expense]);
+
+  // Efecto para auto-seleccionar bus si es WORKER
+  useEffect(() => {
+    if (user?.role === 'WORKER' && user.assignedBusId && !expense) {
+      setFormData(prev => ({
+        ...prev,
+        busId: user.assignedBusId!.toString(),
+      }));
+    }
+  }, [user, expense]);
 
   const createMutation = useMutation({
     mutationFn: (data: CreateExpenseData) => expensesService.createExpense(data),
@@ -153,7 +165,7 @@ export default function ExpenseForm({ expense, onSuccess, onCancel }: ExpenseFor
           value={formData.busId}
           onChange={(e) => setFormData({ ...formData, busId: e.target.value })}
           error={errors.busId}
-          disabled={isLoading || busesLoading}
+          disabled={isLoading || busesLoading || user?.role === 'WORKER'}
           options={[
             { value: '', label: busesLoading ? 'Cargando buses...' : 'Selecciona un bus' },
             ...(busesData?.data.map((bus) => ({

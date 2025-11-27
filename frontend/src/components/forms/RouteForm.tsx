@@ -41,8 +41,8 @@ export default function RouteForm({ route, onSuccess, onCancel }: RouteFormProps
 
   // Estado del formulario
   const [formData, setFormData] = useState<CreateRouteData>({
-    busId: route?.busId || user?.assignedBusId || 0,
-    workerId: route?.workerId || user?.id || 0,
+    busId: route?.busId || 0,
+    workerId: route?.workerId || 0,
     routeName: route?.routeName || '',
     routeDate: route?.routeDate?.split('T')[0] || new Date().toISOString().split('T')[0],
     startTime: route?.startTime?.split('T')[1]?.substring(0, 5) || '',
@@ -55,6 +55,17 @@ export default function RouteForm({ route, onSuccess, onCancel }: RouteFormProps
     })),
     isLocked: route?.isLocked ?? true,
   });
+
+  // Efecto para auto-seleccionar bus y worker si es WORKER
+  useEffect(() => {
+    if (user?.role === 'WORKER' && user.assignedBusId && !route) {
+      setFormData(prev => ({
+        ...prev,
+        busId: user.assignedBusId!,
+        workerId: user.id,
+      }));
+    }
+  }, [user, route]);
 
   const [newExpense, setNewExpense] = useState<RouteExpense>({
     expenseName: '',
