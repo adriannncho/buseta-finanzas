@@ -15,6 +15,7 @@ import profitSharingRoutes from './modules/profit-sharing/profit-sharing.routes'
 import invoiceRoutes from './modules/invoices/invoices.routes';
 import routesRoutes from './modules/routes/routes.routes';
 import auditRoutes from './modules/audit/audit.routes';
+// import dailyReportsRoutes from './modules/daily-reports/daily-reports.routes'; // Comentado: modelo no existe
 
 /**
  * Crea y configura la aplicación Express
@@ -34,7 +35,7 @@ export function createApp(): Application {
 
   // Logger de requests (solo en desarrollo)
   if (config.nodeEnv === 'development') {
-    app.use((req, res, next) => {
+    app.use((req, _res, next) => {
       logger.debug(`${req.method} ${req.path}`, {
         query: req.query,
         body: req.body,
@@ -44,7 +45,7 @@ export function createApp(): Application {
   }
 
   // Health check
-  app.get('/health', (req, res) => {
+  app.get('/health', (_req, res) => {
     res.json({
       status: 'ok',
       timestamp: new Date().toISOString(),

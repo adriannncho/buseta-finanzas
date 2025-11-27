@@ -6,6 +6,7 @@ import {
   getInvoicesQuerySchema,
 } from './invoices.dto';
 import { successResponse } from '../../shared/utils/responses';
+import { AuthRequest } from '../../shared/types/common.types';
 
 export class InvoicesController {
   async getInvoices(req: Request, res: Response, next: NextFunction) {
@@ -28,7 +29,7 @@ export class InvoicesController {
     }
   }
 
-  async createInvoice(req: Request, res: Response, next: NextFunction) {
+  async createInvoice(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       // Verificar que se haya subido un archivo
       if (!req.file) {
@@ -78,7 +79,7 @@ export class InvoicesController {
     }
   }
 
-  async getInvoiceStats(req: Request, res: Response, next: NextFunction) {
+  async getInvoiceStats(_req: Request, res: Response, next: NextFunction) {
     try {
       const stats = await invoicesService.getInvoiceStats();
       return successResponse(res, stats);

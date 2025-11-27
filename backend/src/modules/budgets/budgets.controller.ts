@@ -26,11 +26,11 @@ export class BudgetsController {
     return successResponse(res, budget);
   }
 
-  async getBudgetAnalysis(req: Request, res: Response) {
-    const { id } = req.params;
-    const analysis = await budgetsService.getBudgetAnalysis(parseInt(id, 10));
-    return successResponse(res, analysis);
-  }
+  // async getBudgetAnalysis(req: Request, res: Response) {
+  //   const { id } = req.params;
+  //   const analysis = await budgetsService.getBudgetAnalysis(parseInt(id, 10));
+  //   return successResponse(res, analysis);
+  // }
 
   async createBudget(req: AuthRequest, res: Response) {
     const data: CreateBudgetDto = req.body;

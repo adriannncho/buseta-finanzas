@@ -68,24 +68,20 @@ export class ExpensesService {
     const category = await prisma.expenseCategory.findUnique({
       where: { id },
       include: {
-        expenses: {
+        busExpenses: {
           take: 10,
           orderBy: { createdAt: 'desc' },
           include: {
-            dailyReport: {
+            bus: {
               select: {
-                reportDate: true,
-                bus: {
-                  select: {
-                    internalCode: true,
-                  },
-                },
+                internalCode: true,
+                plateNumber: true,
               },
             },
           },
         },
         _count: {
-          select: { expenses: true },
+          select: { busExpenses: true },
         },
       },
     });
@@ -181,7 +177,7 @@ export class ExpensesService {
       where: { id },
       include: {
         _count: {
-          select: { expenses: true },
+          select: { busExpenses: true },
         },
       },
     });
@@ -190,7 +186,7 @@ export class ExpensesService {
       throw new NotFoundError('Categoría no encontrada');
     }
 
-    if (category._count.expenses > 0) {
+    if (category._count.busExpenses > 0) {
       throw new BadRequestError(
         'No se puede eliminar la categoría porque tiene gastos asociados'
       );
@@ -333,19 +329,15 @@ export class ExpensesService {
       where: { id },
       include: {
         category: true,
-        dailyReport: {
-          include: {
-            bus: {
-              select: {
-                internalCode: true,
-                plateNumber: true,
-              },
-            },
-            worker: {
-              select: {
-                fullName: true,
-              },
-            },
+        bus: {
+          select: {
+            internalCode: true,
+            plateNumber: true,
+          },
+        },
+        creator: {
+          select: {
+            fullName: true,
           },
         },
       },

@@ -9,6 +9,7 @@ import {
   getProfitSharingMembersQuerySchema,
 } from './profit-sharing.dto';
 import { successResponse } from '../../shared/utils/responses';
+import { AuthRequest } from '../../shared/types/common.types';
 
 export class ProfitSharingController {
   // ==================== GRUPOS ====================
@@ -33,12 +34,12 @@ export class ProfitSharingController {
     }
   }
 
-  async createProfitSharingGroup(req: Request, res: Response, next: NextFunction) {
+  async createProfitSharingGroup(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const data = createProfitSharingGroupSchema.parse(req.body);
       const createdBy = req.user!.id;
       const group = await profitSharingService.createProfitSharingGroup(data, createdBy);
-      return successResponse(res, group, 201);
+      return successResponse(res, group, 'Grupo creado', 201);
     } catch (error) {
       next(error);
     }
@@ -91,7 +92,7 @@ export class ProfitSharingController {
     try {
       const data = createProfitSharingMemberSchema.parse(req.body);
       const member = await profitSharingService.createProfitSharingMember(data);
-      return successResponse(res, member, 201);
+      return successResponse(res, member, 'Miembro creado', 201);
     } catch (error) {
       next(error);
     }

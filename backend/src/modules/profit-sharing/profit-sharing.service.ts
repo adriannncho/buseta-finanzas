@@ -227,7 +227,7 @@ export class ProfitSharingService {
   }
 
   async updateProfitSharingGroup(
-    id: string,
+    id: number,
     data: UpdateProfitSharingGroupDto
   ) {
     const existing = await prisma.profitSharingGroup.findUnique({

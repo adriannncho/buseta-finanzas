@@ -38,7 +38,7 @@ router.get('/:id', budgetsController.getBudgetById.bind(budgetsController));
  * GET /api/budgets/:id/analysis
  * Obtener análisis de presupuesto vs gastos reales (todos los usuarios)
  */
-router.get('/:id/analysis', budgetsController.getBudgetAnalysis.bind(budgetsController));
+// router.get('/:id/analysis', budgetsController.getBudgetAnalysis.bind(budgetsController)); // Comentado: método no implementado
 
 /**
  * POST /api/budgets

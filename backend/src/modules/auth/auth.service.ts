@@ -73,7 +73,7 @@ export class AuthService {
       config.jwt.secret,
       {
         expiresIn: config.jwt.expiresIn,
-      }
+      } as jwt.SignOptions
     );
 
     // Registrar en auditoría
@@ -115,7 +115,7 @@ export class AuthService {
    */
   async logout(sessionId: number, userId: number): Promise<void> {
     // Marcar sesión como inactiva
-    const session = await prisma.session.update({
+    await prisma.session.update({
       where: { id: sessionId },
       data: {
         isActive: false,

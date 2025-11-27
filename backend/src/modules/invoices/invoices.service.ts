@@ -76,7 +76,7 @@ export class InvoicesService {
           },
           _count: {
             select: {
-              expenses: true,
+              busExpenses: true,
             },
           },
         },
@@ -109,7 +109,7 @@ export class InvoicesService {
             email: true,
           },
         },
-        expenses: {
+        busExpenses: {
           include: {
             category: {
               select: {
@@ -117,15 +117,10 @@ export class InvoicesService {
                 name: true,
               },
             },
-            dailyReport: {
+            bus: {
               select: {
-                id: true,
-                reportDate: true,
-                bus: {
-                  select: {
-                    internalCode: true,
-                  },
-                },
+                internalCode: true,
+                plateNumber: true,
               },
             },
           },
@@ -214,7 +209,7 @@ export class InvoicesService {
       include: {
         _count: {
           select: {
-            expenses: true,
+            busExpenses: true,
           },
         },
       },
@@ -225,7 +220,7 @@ export class InvoicesService {
     }
 
     // Verificar si tiene gastos asociados
-    if (existing._count.expenses > 0) {
+    if (existing._count.busExpenses > 0) {
       throw new AppError(
         'No se puede eliminar la factura porque tiene gastos asociados',
         400
